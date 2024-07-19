@@ -14,6 +14,7 @@ type Task struct {
 	ID       string `json:"id"`
 	Title    string `json:"title"`
 	ActiveAt string `json:"activeAt"`
+	Done     bool
 }
 
 func (t *Task) getMD5Hash(request TaskRequest) string {

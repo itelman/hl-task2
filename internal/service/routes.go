@@ -18,9 +18,9 @@ func (app *Application) routes() http.Handler {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/todo-list/tasks", app.createTaskHandler).Methods("POST")
-	router.HandleFunc("/api/todo-list/tasks/:id", app.updateTaskHandler).Methods("PUT")
-	router.HandleFunc("/api/todo-list/tasks/:id", app.deleteTaskHandler).Methods("DELETE")
-	router.HandleFunc("/api/todo-list/tasks/:id/done", app.checkTaskHandler).Methods("PUT")
+	router.HandleFunc("/api/todo-list/tasks/{id}", app.updateTaskHandler).Methods("PUT")
+	router.HandleFunc("/api/todo-list/tasks/{id}", app.deleteTaskHandler).Methods("DELETE")
+	router.HandleFunc("/api/todo-list/tasks/{id}/done", app.checkTaskHandler).Methods("PUT")
 	router.HandleFunc("/api/todo-list/tasks", app.listTaskHandler).Methods("GET")
 
 	router.HandleFunc("/health", app.healthCheckHandler).Methods("GET")
