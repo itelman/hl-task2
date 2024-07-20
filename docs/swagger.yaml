@@ -1,76 +1,180 @@
-basePath: /
 definitions:
-  models.Request:
+  models.Task:
     properties:
-      headers:
-        additionalProperties:
-          type: string
-        type: object
-      method:
+      activeAt:
         type: string
-      url:
-        type: string
-    type: object
-  models.Response:
-    properties:
-      headers:
-        additionalProperties:
-          items:
-            type: string
-          type: array
-        type: object
+      done:
+        type: boolean
       id:
         type: string
-      length:
-        type: integer
-      status:
-        type: integer
+      title:
+        type: string
     type: object
-host: localhost:8080
+  models.TaskRequest:
+    properties:
+      activeAt:
+        type: string
+      title:
+        type: string
+    type: object
 info:
-  contact: {}
-  description: This is a server to proxy HTTP requests.
-  title: HTTP Proxy Server API
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a simple Todo List API.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Todo List API
   version: "1.0"
 paths:
-  /:
-    post:
-      consumes:
-      - application/json
-      description: Proxies an HTTP request to a specified URL.
+  /api/todo-list/tasks:
+    get:
+      description: Get all tasks by status
       parameters:
-      - description: Request payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.Request'
+      - description: Status Filter
+        in: query
+        name: status
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+        "404":
+          description: Not Found
           schema:
             type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Proxy HTTP request
-  /health:
-    get:
+      summary: Get all tasks
+      tags:
+      - tasks
+    post:
       consumes:
       - application/json
+      description: Create a new task
+      parameters:
+      - description: Task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}:
+    delete:
+      description: Delete a task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Delete a task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update a task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Update a task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}/done:
+    put:
+      description: Update a task status by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Mark task as done
+      tags:
+      - tasks
+  /health:
+    get:
       description: This endpoint checks the health of the server.
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
             type: string
       summary: Health check

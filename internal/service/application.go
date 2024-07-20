@@ -1,9 +1,9 @@
 package service
 
 import (
-	"proxy-server/internal/cache"
-	"proxy-server/internal/service/jsonlog"
 	"sync"
+	"todo-list/internal/cache"
+	"todo-list/internal/service/jsonlog"
 )
 
 type Application struct {

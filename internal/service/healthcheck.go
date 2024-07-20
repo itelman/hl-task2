@@ -7,9 +7,9 @@ import "net/http"
 //	@Summary		Health check
 //	@Description	This endpoint checks the health of the server.
 //	@Tags			health
-//	@Accept			json
 //	@Produce		json
-//	@Success		200	{string}	string	"OK"
+//	@Success		200	{object}	map[string]string
+//	@Failure		500	{string}	string	"Internal Server Error"
 //	@Router			/health [get]
 func (app *Application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	env := envelope{

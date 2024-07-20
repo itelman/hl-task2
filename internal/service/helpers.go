@@ -6,8 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"strings"
+	"todo-list/pkg/models"
+	"unicode/utf8"
 )
+
+var dateRegex = regexp.MustCompile("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$")
 
 type envelope map[string]interface{}
 
@@ -31,7 +36,7 @@ func (app *Application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *Application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
+func (app *Application) readJSON(w http.ResponseWriter, r *http.Request, dst *models.TaskRequest) error {
 	maxBytes := 1_048_576
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 	dec := json.NewDecoder(r.Body)
@@ -66,6 +71,14 @@ func (app *Application) readJSON(w http.ResponseWriter, r *http.Request, dst int
 		default:
 			return err
 		}
+	}
+
+	if utf8.RuneCountInString(dst.Title) > 200 {
+		return errors.New("title must not be larger than 200 characters")
+	}
+
+	if !dateRegex.MatchString(dst.ActiveAt) {
+		return fmt.Errorf("body contains incorrect JSON type for field %q", dst.ActiveAt)
 	}
 
 	err = dec.Decode(&struct{}{})

@@ -17,15 +17,23 @@ type Task struct {
 	Done     bool
 }
 
-func (t *Task) getMD5Hash(request TaskRequest) string {
-	hash := md5.Sum([]byte(request.Title))
+func (t *TaskRequest) getMD5Hash() string {
+	hash := md5.Sum([]byte(t.Title + t.ActiveAt))
 	return hex.EncodeToString(hash[:])
 }
 
-func (t *Task) Set(request TaskRequest) error {
-	t.ID = t.getMD5Hash(request)
-	t.Title = request.Title
-	t.ActiveAt = request.ActiveAt
+func NewTask(request TaskRequest) Task {
+	return Task{request.getMD5Hash(), request.Title, request.ActiveAt, false}
+}
 
-	return nil
+func UpdatedTask(request TaskRequest, id string) Task {
+	return Task{id, request.Title, request.ActiveAt, false}
+}
+
+func (t *Task) Check() {
+	t.Done = true
+}
+
+func (t *Task) MarkAsWeekend() {
+	t.Title = "ВЫХОДНОЙ - " + t.Title
 }
