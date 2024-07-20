@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"proxy-server/internal/service"
-	"proxy-server/internal/service/jsonlog"
+	"todo-list/internal/service"
+	"todo-list/internal/service/jsonlog"
 )
 
 const port = 8080
