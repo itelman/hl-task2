@@ -3,31 +3,20 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"todo-list/internal/service"
-	"todo-list/internal/service/jsonlog"
+	"log"
+	"net/http"
+	"todo-list/internal/config"
 )
 
-const port = 8080
-
 func main() {
-	var cfg service.Config
+	var port int
 
-	flag.IntVar(&cfg.Port, "port", port, "port for api")
-	flag.StringVar(&cfg.Env, "env", "development", "Environment (development|staging|production)")
-
+	flag.IntVar(&port, "port", 8080, "port for api")
 	flag.Parse()
 
-	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
-
-	app := &service.Application{
-		Config: cfg,
-		Logger: logger,
-	}
-
 	fmt.Printf("Server starting on http://localhost:%d\n\n", port)
-	err := app.Serve()
+	err := http.ListenAndServe(":8080", config.Routes())
 	if err != nil {
-		logger.PrintFatal(err, nil)
+		log.Fatal(err, nil)
 	}
 }

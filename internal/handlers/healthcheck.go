@@ -1,6 +1,9 @@
-package service
+package handlers
 
-import "net/http"
+import (
+	"net/http"
+	"todo-list/internal/service/helpers"
+)
 
 // healthCheckHandler godoc
 //
@@ -11,17 +14,17 @@ import "net/http"
 //	@Success		200	{object}	map[string]string
 //	@Failure		500	{string}	string	"Internal Server Error"
 //	@Router			/health [get]
-func (app *Application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	env := envelope{
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	env := map[string]interface{}{
 		"status": "available",
 		"system_info": map[string]string{
-			"environment": app.Config.Env,
-			"version":     version,
+			"environment": "development",
+			"version":     "1.0",
 		},
 	}
 
-	err := app.writeJSON(w, http.StatusOK, env, nil)
+	err := helpers.WriteJSON(w, http.StatusOK, env, nil)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		ServerErrorResponse(w, r, err)
 	}
 }
